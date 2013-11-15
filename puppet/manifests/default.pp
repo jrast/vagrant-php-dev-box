@@ -27,7 +27,6 @@ class system-update {
   $sysPackages = [ "build-essential" ]
   package { $sysPackages:
     ensure => "installed",
-    require => Exec['apt-get update'],
   }
 }
 
@@ -55,25 +54,13 @@ class nginx-setup {
 
 class development {
 
-  $devPackages = [ "curl", "git", "nodejs", "npm", "capistrano", "rubygems", "openjdk-7-jdk", "libaugeas-ruby" ]
-  package { $devPackages:
-    ensure => "installed",
-    require => Exec['apt-get update'],
-  }
+  #$devPackages = ["git"]
+  #package { $devPackages: }
 
-  exec { 'install less using npm':
-    command => 'npm install less -g',
-    require => Package["npm"],
-  }
-
-  exec { 'install capifony using RubyGems':
-    command => 'gem install capifony',
-    require => Package["rubygems"],
-  }
-
-  exec { 'install capistrano_rsync_with_remote_cache using RubyGems':
-    command => 'gem install capistrano_rsync_with_remote_cache',
-    require => Package["capistrano"],
+  # Global Nodejs Packages
+  $nodejsPackages = ["less"]
+  package { $nodejsPackages:
+      provider => 'npm'
   }
 }
 
@@ -173,19 +160,24 @@ Exec["apt-get update"] -> Package <| |>
 
 include system-update
 
-include php::fpm
-include devbox_php_fpm
+#include php::fpm
+#include devbox_php_fpm
 
-include nginx-setup
+#include nginx-setup
 include apache
+include php
 include mysql
-
-class {'mongodb':
-  enable_10gen => true,
+include git
+include composer
+class { 'nodejs':
+  make_install => false
 }
 
-include phpqatools
-include development
-include symfony-standard
+#class {'mongodb':
+#  enable_10gen => true,
+#}
 
+#include phpqatools
+include development
+#include symfony-standard
 
