@@ -164,7 +164,18 @@ include system-update
 #include devbox_php_fpm
 
 #include nginx-setup
-include apache
+#
+# Apache Config
+class { 'apache':
+  default_vhost => false,
+}
+apache::vhost { 'default':
+  docroot     => '/home/vagrant/www',
+  priority    => '1',
+  template    => 'apache/virtualhost/vhost.conf.erb',
+}
+
+
 include php
 include mysql
 include git

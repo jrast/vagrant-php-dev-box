@@ -34,8 +34,8 @@ Vagrant::Config.run do |config|
   # config.vm.share_folder "v-data", "/vagrant_data", "../data"
   # 
   
-  # Fix Bug about missing augeas library
-  config.vm.provision :shell, :inline => "sudo apt-get update && sudo apt-get install puppet -y"
+  # Fix Bug about missing augeas library, must only be run once at first startup
+  #config.vm.provision :shell, :inline => "sudo apt-get update && sudo apt-get install puppet -y"
 
   # Enable provisioning with Puppet stand alone.  Puppet manifests
   # are contained in a directory path relative to this Vagrantfile.
