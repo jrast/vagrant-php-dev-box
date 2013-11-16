@@ -24,7 +24,7 @@ class system-update {
     command => 'apt-get update',
   }
 
-  $sysPackages = [ "build-essential" ]
+  $sysPackages = [ "build-essential", "vim" ]
   package { $sysPackages:
     ensure => "installed",
   }
@@ -169,14 +169,17 @@ include system-update
 class { 'apache':
   default_vhost => false,
 }
-apache::vhost { 'default':
-  docroot     => '/home/vagrant/www',
-  priority    => '1',
-  template    => 'apache/virtualhost/vhost.conf.erb',
+apache::mod {'rewrite':}
+apache::mod {'php5':}
+apache::vhost { 'vagrant':
+  docroot     => '/vagrant/www',
+  port        => '80',
 }
 
 
 include php
+include php::apache2
+
 include mysql
 include git
 include composer
